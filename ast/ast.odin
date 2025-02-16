@@ -77,6 +77,9 @@ File :: struct {
 	comments:             [dynamic]^Comment_Group,
 	syntax_warning_count: int,
 	syntax_error_count:   int,
+
+	//Additions for CTE run
+	cte_run_stmts:        [dynamic]^CTE_Run_Stmt,
 }
 
 

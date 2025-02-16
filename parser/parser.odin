@@ -215,6 +215,11 @@ parse_file :: proc(p: ^Parser, file: ^ast.File) -> bool {
 	for p.curr_tok.kind != .EOF {
 		stmt := parse_stmt(p)
 		if stmt != nil {
+			if cte_run_stmt, ok := stmt.derived.(^ast.CTE_Run_Stmt); ok {
+				append(&p.file.decls, stmt)
+				append(&p.file.cte_run_stmts, cte_run_stmt)
+
+			}
 			if _, ok := stmt.derived.(^ast.Empty_Stmt); !ok {
 				append(&p.file.decls, stmt)
 				if es, es_ok := stmt.derived.(^ast.Expr_Stmt); es_ok && es.expr != nil {
