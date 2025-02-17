@@ -5,9 +5,12 @@ import rl "vendor:raylib"
 
 copmile_time_raylib :: proc() {
     rl.InitWindow(800,400,"CTE demo")
+    for !rl.WindowShouldClose(){
     rl.BeginDrawing()
-    rl.ClearBackground({63,72,86,1})
+        rl.ClearBackground({63,72,86,1})
     rl.EndDrawing()
+    }
+    rl.CloseWindow()
 }
 at_compile_time :: proc() {
     fmt.println("At compile time")
@@ -23,4 +26,4 @@ main :: proc() {
 
 #run at_compile_time()
 
-//#run copmile_time_raylib()
+#run copmile_time_raylib()
