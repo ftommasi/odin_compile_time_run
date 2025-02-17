@@ -7,6 +7,7 @@ import "./tokenizer"
 
 import "core:fmt"
 import "core:os"
+import "core:os/os2"
 import "core:strings"
 
 main :: proc() {
@@ -42,7 +43,12 @@ main :: proc() {
 
 		//TODO fix the source of the bug here. Maybe odin fmt and update the replace string???
 		//TODO remove all run statements
-		without_main, _ := strings.replace_all(file_string, "main", "_main") //this could mess up some strings so we need to be carefule
+		format_proc_desc := os2.Process_Desc {
+			working_dir = "./src",
+			command     = {"odin", "fmt", "."},
+		}
+		state, fmt_out, fmt_clean, err := os2.process_exec(format_proc_desc, context.allocator) //odin fmt gen/main.odin
+		without_main, _ := strings.replace_all(file_string, "main :: proc", "_main :: proc") //this could mess up some strings so we need to be carefule
 		last_import_offset := 0
 		for import_stmt in file_ast.imports {
 			if last_import_offset <= import_stmt.end.offset {
@@ -101,5 +107,12 @@ compile_time_execution :: proc(ctx: CTE) {
 	}
 
 	os.write_entire_file("gen/main.odin", transmute([]u8)final_cte_program)
+	build_proc_desc := os2.Process_Desc {
+		working_dir = "./gen",
+		command     = {"odin", "run", "."},
+	}
+	state, build_out, build_clean, err := os2.process_exec(build_proc_desc, context.allocator) //odin fmt gen/main.odin
+
+	fmt.println("Captured output ", string(build_out))
 
 }
